@@ -8,16 +8,28 @@
 </head>
 <body>
     <div class="game-wrapper">
+        <img class="brand-logo" src="img/cw_logo-horizontal.png" alt="charity: water logo">
         <h1 class="game-title">Water Drop</h1>
         <p class="game-tagline">Catch the good drops, avoid the bad ones!</p>
-        <div class="score-panel">
-            <div class="score">Score: <span id="score">0</span></div>
-            <div class="timer">Time: <span id="time">30</span>s</div>
-            <button id="start-btn">Start Game</button>
+        <p class="drop-legend" aria-label="Drop key">
+            <span class="legend-good">&#9679;</span> Good drop <span class="legend-sep">|</span>
+            <span class="legend-bad">&#9679;</span> Bad drop
+        </p>
+        <div class="score-panel" role="region" aria-label="Game controls">
+            <div class="score-stats">
+                <div class="score" aria-live="polite" aria-atomic="true">Score: <span id="score">0</span></div>
+                <div class="timer" aria-live="polite" aria-atomic="true">Time: <span id="time">30</span>s</div>
+            </div>
+            <div class="score-buttons">
+                <button id="start-btn" aria-label="Start the game">Start Game</button>
+                <button id="reset-btn" aria-label="Reset the game">Reset</button>
+            </div>
         </div>
         
-        <div id="game-container">
+        <div id="game-container" role="region" aria-label="Game area">
         </div>
+        <canvas id="confetti-canvas"></canvas>
+        <p id="game-message" class="game-message" aria-live="polite"></p>
     </div>
     
     <script src="script.js"></script>

@@ -24,105 +24,238 @@ Fonts:
     box-sizing: border-box;
 }
 
+#confetti-canvas {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 30;
+}
+
+:root {
+    --cw-yellow: #FFC907;
+    --cw-blue: #2E9DF7;
+    --cw-light-blue: #8BD1CB;
+    --cw-green: #4FCB53;
+    --cw-orange: #FF902A;
+    --cw-red: #F5402C;
+    --cw-text: #1f1f1f;
+    --panel-bg: #ffffff;
+}
+
 body {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     min-height: 100vh;
-    background-color: #f0f0f0;
-    font-family: Arial, sans-serif;
+    padding: 24px 16px 32px;
+    background: radial-gradient(circle at top right, rgba(46, 157, 247, 0.22), transparent 45%),
+                radial-gradient(circle at bottom left, rgba(255, 201, 7, 0.18), transparent 52%),
+                #f7fcff;
+    color: var(--cw-text);
+    font-family: Avenir, "Avenir Next", "Segoe UI", sans-serif;
 }
 
 .game-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 16px;
+    width: min(920px, 100%);
+}
+
+.brand-logo {
+    width: min(360px, 70vw);
+    height: auto;
+    margin-top: 6px;
 }
 
 .score-panel {
     display: flex;
-    justify-content: space-between;  /* Space between score and button */
+    justify-content: space-between;
     align-items: center;
-    width: 800px;
-    padding: 10px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    gap: 12px;
+    width: min(800px, 100%);
+    padding: 12px 16px;
+    background-color: var(--panel-bg);
+    border: 2px solid rgba(46, 157, 247, 0.28);
+    border-radius: 14px;
+    box-shadow: 0 10px 24px rgba(10, 40, 62, 0.08);
+}
+
+.score-stats {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.score-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .timer {
-    flex: 0 1 auto;
-    font-size: 24px;
+    font-size: clamp(18px, 3vw, 24px);
     font-weight: bold;
 }
 
+.drop-legend {
+    font-size: clamp(13px, 1.8vw, 15px);
+    color: #4a687a;
+    text-align: center;
+    margin-bottom: 2px;
+}
+
+.legend-good { color: var(--cw-blue); font-size: 1.2em; }
+.legend-bad  { color: var(--cw-red);  font-size: 1.2em; }
+.legend-sep  { margin: 0 6px; color: #aaa; }
+
 #game-container {
-    width: 800px;
-    height: 600px;
-    background-color: #e6f7ff;
-    border: 2px solid #333;
-    border-radius: 8px;
+    width: min(800px, 100%);
+    aspect-ratio: 4 / 3;
+    max-height: 76vh;
+    background: linear-gradient(180deg, #e8f8ff 0%, #d8f3ff 100%);
+    border: 3px solid rgba(46, 157, 247, 0.8);
+    border-radius: 16px;
     position: relative;
     overflow: hidden;
 }
 
 
-#start-btn {
-    padding: 8px 16px;
-    background-color: #4CAF50;
-    color: white;
+#start-btn,
+#reset-btn {
+    padding: 10px 16px;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 16px;
+    font-weight: 700;
+    transition: transform 0.15s ease, filter 0.15s ease;
 }
 
-#start-btn:hover {
-    background-color: #45a049;
+#start-btn {
+    background-color: var(--cw-yellow);
+    color: #0d0d0d;
+}
+
+#reset-btn {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+#start-btn:hover,
+#reset-btn:hover {
+    filter: brightness(0.92);
+    transform: translateY(-1px);
+}
+
+#start-btn:focus-visible,
+#reset-btn:focus-visible {
+    outline: 3px solid var(--cw-blue);
+    outline-offset: 3px;
+}
+
+.water-drop:focus-visible {
+    outline: 3px solid var(--cw-yellow);
+    outline-offset: 2px;
+}
+
+#start-btn:disabled {
+    background-color: #ffe58a;
+    cursor: not-allowed;
+    transform: none;
 }
 
 .score {
-    flex: 0 1 auto;  /* Don't grow, can shrink, auto basis */
-    font-size: 24px;
+    font-size: clamp(18px, 3vw, 24px);
     font-weight: bold;
 }
 
 .water-drop {
     position: absolute;
-    width: 60px;  /* increased from 40px */
-    height: 60px; /* increased from 40px */
-    background-color: #0099ff;
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(circle at 30% 28%, #ffffff 0%, #cdefff 36%, var(--cw-blue) 100%);
     border-radius: 50%;
     animation: dropFall linear forwards;
     transform-origin: center;
     cursor: pointer;
-    padding: 15px;  /* Add padding for larger click area */
-    margin: -15px;  /* Offset padding to maintain visual size */
-    transition: transform 0.1s ease;  /* Smooth hover effect */
+    box-shadow: inset -7px -10px 16px rgba(9, 87, 140, 0.35), 0 8px 14px rgba(30, 111, 154, 0.3);
+    transition: transform 0.1s ease;
 }
 
 .water-drop:hover {
-    transform: scale(1.1);  /* Slight grow effect on hover */
+    transform: scale(1.1);
+}
+
+.water-drop.caught {
+    background: radial-gradient(circle at 30% 28%, #ffffff 0%, #fff9c4 36%, var(--cw-yellow) 100%);
+    box-shadow: inset -4px -6px 10px rgba(180, 120, 0, 0.3), 0 6px 14px rgba(255, 201, 7, 0.5);
+    transform: scale(1.15);
 }
 
 .bad-drop {
-    background-color: #ff4444;
+    background: radial-gradient(circle at 30% 28%, #ffffff 0%, #ffcccc 36%, var(--cw-red) 100%);
+    box-shadow: inset -7px -10px 16px rgba(140, 9, 9, 0.35), 0 8px 14px rgba(154, 30, 30, 0.3);
+}
+
+.water-drop.caught-bad {
+    background: radial-gradient(circle at 30% 28%, #ffffff 0%, #ffcccc 36%, #cc0000 100%);
+    box-shadow: 0 0 14px rgba(245, 64, 44, 0.8);
+    animation: dropFall linear forwards, badShake 0.35s ease;
 }
 
 .game-title {
-    color: #131313;
-    font-size: 48px;
+    color: #0f2f40;
+    font-size: clamp(32px, 6vw, 54px);
     margin-top: 0;
-    margin-bottom: 5px;  /* reduced from 20px */
+    margin-bottom: 3px;
     text-align: center;
+    line-height: 1;
 }
 
 .game-tagline {
-    color: #666;
-    font-size: 18px;
-    margin-bottom: 20px;
+    color: #32586a;
+    font-size: clamp(16px, 2.4vw, 20px);
+    margin-bottom: 10px;
     text-align: center;
+}
+
+.game-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+    width: min(90vw, 620px);
+    min-height: 32px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: clamp(16px, 2.4vw, 20px);
+    font-weight: 700;
+    text-align: center;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.18);
+}
+
+.game-message:empty {
+    display: none;
+}
+
+.game-message.win {
+    color: #0f6728;
+    background-color: rgba(79, 203, 83, 0.16);
+    border: 2px solid rgba(79, 203, 83, 0.45);
+}
+
+.game-message.lose {
+    color: #8a2a18;
+    background-color: rgba(255, 144, 42, 0.18);
+    border: 2px solid rgba(255, 144, 42, 0.5);
 }
 
 @keyframes dropFall {
@@ -130,16 +263,65 @@ body {
         transform: translateY(-20px);
     }
     to {
-        transform: translateY(600px);
+        transform: translateY(var(--fall-distance, 700px));
+    }
+}
+
+@keyframes badShake {
+    0%   { transform: scale(1.15) translateX(0); }
+    25%  { transform: scale(1.15) translateX(-7px); }
+    50%  { transform: scale(1.15) translateX(7px); }
+    75%  { transform: scale(1.15) translateX(-4px); }
+    100% { transform: scale(1.15) translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .water-drop,
+    .water-drop.caught,
+    .water-drop.caught-bad {
+        animation: none;
+        transition: none;
     }
 }
 
 @media (max-width: 850px) {
-    .game-wrapper, .score-panel, #game-container {
-        width: 95vw;
+    body {
+        padding: 14px 10px 20px;
     }
-    
+
+    .score-panel {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .score-stats {
+        justify-content: space-between;
+    }
+
+    .score-buttons {
+        justify-content: stretch;
+    }
+
+    .score-buttons button {
+        flex: 1;
+    }
+
     #game-container {
-        height: 70vh;
+        width: 100%;
+        min-height: 280px;
+    }
+}
+
+@media (max-width: 480px) {
+    .score-stats {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .game-message {
+        font-size: 16px;
+        padding: 12px 14px;
     }
 }
